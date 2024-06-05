@@ -1,31 +1,32 @@
 ---
-- name: Install Java and set up Minecraft server
-  hosts: minecraft_servers
+- name: Install and configure Minecraft server
+  hosts: minecraft
   become: yes
-
   tasks:
-    - name: Download Java
+    - name: Install Java
       yum:
         name: java-17-amazon-corretto-headless
         state: present
 
-    - name: Create Minecraft user
-      user:
-        name: minecraft
-
-    - name: Create Minecraft server directory
+    - name: Create Minecraft directory
       file:
         path: /opt/minecraft/server
         state: directory
-        owner: minecraft
-        group: minecraft
 
     - name: Download Minecraft server jar file
       get_url:
-        url: "{{ minecraft_server_url }}"
+        url: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14e"
         dest: /opt/minecraft/server/server.jar
-        mode: '0644'
-        owner: minecraft
-        group: minecraft
 
-    # Add more tasks here for setting up Minecraft server
+    - name: Set up Minecraft server systemd service
+      template:
+        src: minecraft.service.j2
+        dest: /etc/systemd/system/minecraft.service
+      notify: Start Minecraft server
+
+  handlers:
+    - name: Start Minecraft server
+      systemd:
+        name: minecraft
+        state: started
+        enabled: yes

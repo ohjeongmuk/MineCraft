@@ -1,0 +1,33 @@
+name: Provision and Configure Minecraft Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.0
+
+    - name: Initialize Terraform
+      run: terraform init
+
+    - name: Apply Terraform
+      run: terraform apply -auto-approve
+
+    - name: Setup Ansible
+      uses: ansible/setup-ansible@v2
+
+    - name: Run Ansible playbook
+      run: ansible-playbook -i terraform/terraform-inventory ansible/playbook.yml
+      env:
+        MINECRAFTSERVERURL: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14e"
