@@ -25,7 +25,9 @@ jobs:
       run: terraform apply -auto-approve
 
     - name: Setup Ansible
-      uses: ansible/setup-ansible@v2
+      run: |
+        sudo apt update
+        sudo apt install -y ansible
 
     - name: Run Ansible playbook
       run: ansible-playbook -i terraform/terraform-inventory ansible/playbook.yml
