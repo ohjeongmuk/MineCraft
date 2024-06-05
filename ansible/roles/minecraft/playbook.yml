@@ -1,0 +1,8 @@
+---
+- name: Provision Minecraft server
+  hosts: minecraft_servers
+  become: yes
+  gather_facts: no
+
+  roles:
+    - minecraft
