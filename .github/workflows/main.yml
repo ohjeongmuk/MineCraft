@@ -22,7 +22,9 @@ jobs:
       run: terraform init
 
     - name: Apply Terraform
-      run: terraform apply -auto-approve
+      run: |
+        cd terraform
+        terraform apply -auto-approve
 
     - name: Setup Ansible
       run: |
