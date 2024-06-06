@@ -39,11 +39,23 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
         
+    - name: Get Terraform Outputs
+      id: output
+      run: |
+        cd terraform
+        terraform output -json > tf-outputs.json
+        
 
     - name: Setup Ansible
       run: |
         sudo apt update
         sudo apt install -y ansible
+
+    - name: Create Ansible Inventory
+      run: |
+        INSTANCE_IP=$(jq -r '.instance_ip.value' terraform/tf-outputs.json)
+        echo "[minecraft_server]" > inventory
+        echo "$INSTANCE_IP ansible_ssh_private_key_file=path_to_private_key ansible_user=ec2-user" >> inventory
 
     - name: Run Ansible playbook
       run: ansible-playbook -i terraform/terraform-inventory ansible/playbook.yml
