@@ -1,32 +1,17 @@
 ---
-- name: Install and configure Minecraft server
-  hosts: minecraft
+- name: Ensure Minecraft server is running
+  hosts: all
   become: yes
   tasks:
-    - name: Install Java
-      yum:
-        name: java-17-amazon-corretto-headless
-        state: present
+    - name: Ping the instance to ensure it is up and running
+      ping:
 
-    - name: Create Minecraft directory
-      file:
-        path: /opt/minecraft/server
-        state: directory
+    - name: Check if Minecraft server process is running
+      shell: pgrep -f minecraft
+      register: minecraft_process
+      ignore_errors: yes
 
-    - name: Download Minecraft server jar file
-      get_url:
-        url: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14e"
-        dest: /opt/minecraft/server/server.jar
-
-    - name: Set up Minecraft server systemd service
-      template:
-        src: minecraft.service.j2
-        dest: /etc/systemd/system/minecraft.service
-      notify: Start Minecraft server
-
-  handlers:
-    - name: Start Minecraft server
-      systemd:
-        name: minecraft
-        state: started
-        enabled: yes
+    - name: Ensure Minecraft server is running
+      fail:
+        msg: "Minecraft server is not running!"
+      when: minecraft_process.rc != 0
