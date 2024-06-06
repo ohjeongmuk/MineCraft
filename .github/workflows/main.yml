@@ -45,6 +45,8 @@ jobs:
         sudo apt install -y ansible
 
     - name: Run Ansible playbook
-      run: ansible-playbook -i terraform/terraform-inventory ansible/playbook.yml
+      run: |
+        ansible-playbook -i "$(terraform output -raw instance_ip)," ansible/playbook.yml --private-key ${{ secrets.SSH_PRIVATE_KEY }}
       env:
         MINECRAFTSERVERURL: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14e"
+        ANSIBLE_HOST_KEY_CHECKING: "false"
