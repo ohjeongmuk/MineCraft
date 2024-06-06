@@ -2,14 +2,15 @@ provider "aws" {
   region = "us-west-2"
 }
 
-data "aws_instance" "minecraft" {
-  instance_id = "i-0ba311bacff7784d4"
-}
+resource "aws_instance" "minecraft_start" {
+  count         = 1
+  instance_id   = "i-0ba311bacff7784d4" // 시작할 인스턴스의 ID로 대체합니다.
+  
+  lifecycle {
+    create_before_destroy = true
+  }
 
-data "aws_security_group" "existing_security_group" {
-  id = "sg-03f416246cf746bf8"
-}
-
-output "instance_ip" {
-  value = data.aws_instance.minecraft.public_ip
+  provisioner "local-exec" {
+    command = "aws ec2 start-instances --instance-ids ${self.instance_id}"
+  }
 }
