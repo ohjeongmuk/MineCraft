@@ -1,17 +1,12 @@
 ---
 - name: Ensure Minecraft server is running
-  hosts: all
-  become: yes
+  hosts: minecraft_server
   tasks:
-    - name: Ping the instance to ensure it is up and running
-      ping:
-
-    - name: Check if Minecraft server process is running
-      shell: pgrep -f minecraft
+    - name: Check if Minecraft server is running
+      shell: ps aux | grep -v grep | grep minecraft
       register: minecraft_process
       ignore_errors: yes
 
-    - name: Ensure Minecraft server is running
-      fail:
-        msg: "Minecraft server is not running!"
+    - name: Start Minecraft server if not running
+      shell: java -Xmx1024M -Xms1024M -jar server.jar nogui
       when: minecraft_process.rc != 0
