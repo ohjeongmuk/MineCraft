@@ -19,7 +19,7 @@ jobs:
         aws configure set default.region us-west-2
         INSTANCE_STATE=$(aws ec2 describe-instances --instance-ids i-0ba311bacff7784d4 --query 'Reservations[0].Instances[0].State.Name' --output text)
         if [ "$INSTANCE_STATE" != "running" ]; then
-          INSTANCE_ID=$(aws ec2 run-instances --image-id ami-01cd4de4363ab6ee8 --instance-type t3.small --key-name minecraft_key.pem --query 'Instances[0].InstanceId' --output text)
+          INSTANCE_ID=$(aws ec2 run-instances --image-id ami-01cd4de4363ab6ee8 --instance-type t3.small --key-name lab6.pem --query 'Instances[0].InstanceId' --output text)
           aws ec2 wait instance-running --instance-ids $INSTANCE_ID
           echo "::set-output name=instance_id::$INSTANCE_ID"
         else
