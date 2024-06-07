@@ -8,7 +8,7 @@ resource "aws_instance" "minecraft" {
   instance_type = "t3.small"               # 사용할 인스턴스 유형으로 변경
   key_name      = "lab6"                    # 사용할 키 페어 이름으로 변경
 
-  security_groups = ["sg-03f416246cf746bf8"]  # 사용할 보안 그룹 ID로 변경
+  security_groups = "sg-03f416246cf746bf8"
 
   tags = {
     Name = "MinecraftServer"
