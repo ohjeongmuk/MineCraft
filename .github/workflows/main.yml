@@ -13,11 +13,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install nmap
-      run: sudo apt update && sudo apt install -y nmap
-
     - name: Initialize Terraform
-      run: terraform init
+        run: terraform init -reconfigure -backend=false -plugin-dir="$HOME/.terraform.d/plugins" -upgrade
 
     - name: Apply Terraform
       run: |
