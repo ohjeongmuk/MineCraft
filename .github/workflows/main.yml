@@ -24,9 +24,10 @@ jobs:
         AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
 
     - name: Setup Ansible
-      uses: ansible/setup-ansible@v2
-      with:
-        ansible-version: 2.9
+      run: |
+        sudo apt update
+        sudo apt install -y ansible
+
 
     - name: Run Ansible playbook
       run: ansible-playbook -i terraform/terraform-inventory ansible/playbook.yml
