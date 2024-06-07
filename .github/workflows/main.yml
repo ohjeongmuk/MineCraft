@@ -13,8 +13,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Install AWS CLI
+      run: |
+        sudo apt update
+        sudo apt install -y awscli
+
     - name: Start EC2 Instance
-      run: aws ec2 start-instances --instance-ids i-0ba311bacff7784d4
+      run: |
+        aws ec2 start-instances --instance-ids i-0ba311bacff7784d4
+        aws ec2 wait instance-running --instance-ids i-0ba311bacff7784d4
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
