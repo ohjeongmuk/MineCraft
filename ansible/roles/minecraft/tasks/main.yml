@@ -1,12 +1,32 @@
 ---
-- name: Ensure Minecraft server is running
-  hosts: localhost
+- name: Install and configure Minecraft server
+  hosts: minecraft
+  become: yes
   tasks:
-    - name: Check if Minecraft server is running
-      shell: ps aux | grep -v grep | grep minecraft
-      register: minecraft_process
-      ignore_errors: yes
+    - name: Install Java
+      yum:
+        name: java-17-amazon-corretto-headless
+        state: present
 
-    - name: Start Minecraft server if not running
-      shell: java -Xmx1024M -Xms1024M -jar server.jar nogui
-      when: minecraft_process.rc != 0
+    - name: Create Minecraft directory
+      file:
+        path: /opt/minecraft/server
+        state: directory
+
+    - name: Download Minecraft server jar file
+      get_url:
+        url: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14e"
+        dest: /opt/minecraft/server/server.jar
+
+    - name: Set up Minecraft server systemd service
+      template:
+        src: minecraft.service.j2
+        dest: /etc/systemd/system/minecraft.service
+      notify: Start Minecraft server
+
+  handlers:
+    - name: Start Minecraft server
+      systemd:
+        name: minecraft
+        state: started
+        enabled: yes
