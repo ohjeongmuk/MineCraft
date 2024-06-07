@@ -42,4 +42,8 @@ resource "aws_instance" "minecraft" {
   tags = {
     Name = "MinecraftServer"
   }
+
+  lifecycle {
+    prevent_destroy = true  # 인스턴스를 삭제하지 않도록 설정
+  }
 }
