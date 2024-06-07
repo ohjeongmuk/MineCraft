@@ -13,13 +13,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install AWS CLI
-      run: |
-        sudo apt update
-        sudo apt install -y awscli
-
     - name: Start EC2 Instance
       run: |
+        aws configure set default.region us-west-2
         aws ec2 start-instances --instance-ids i-0ba311bacff7784d4
         aws ec2 wait instance-running --instance-ids i-0ba311bacff7784d4
       env:
