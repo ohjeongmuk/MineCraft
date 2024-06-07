@@ -1,4 +1,5 @@
 ---
+- name: Provision and configure Minecraft server
   hosts: minecraft_server
   become: yes
   tasks:
