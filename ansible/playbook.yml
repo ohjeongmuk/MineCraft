@@ -1,8 +1,32 @@
 ---
-- name: Provision Minecraft server
-  hosts: minecraft_servers
+- name: Install and configure Minecraft server
+  hosts: minecraft_server
   become: yes
-  gather_facts: no
+  tasks:
+    - name: Install Java
+      yum:
+        name: java-17-amazon-corretto-headless
+        state: present
 
-  roles:
-    - minecraft
+    - name: Create Minecraft directory
+      file:
+        path: /opt/minecraft/server
+        state: directory
+
+    - name: Download Minecraft server jar file
+      get_url:
+        url: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar"
+        dest: /opt/minecraft/server/server.jar
+
+    - name: Set up Minecraft server systemd service
+      template:
+        src: minecraft.service.j2
+        dest: /etc/systemd/system/minecraft.service
+      notify: Start Minecraft server
+
+  handlers:
+    - name: Start Minecraft server
+      systemd:
+        name: minecraft
+        state: started
+        enabled: yes
