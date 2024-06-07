@@ -18,7 +18,7 @@ jobs:
         cd terraform
         terraform init
         terraform apply -auto-approve -var="key_name=lab6"  
-        terraform output -json | jq -r '.instance_ip.value' > terraform/instance_public_ip.txt
+        terraform output -json | jq -r '.instance_ip.value' > ../terraform/instance_public_ip.txt
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
