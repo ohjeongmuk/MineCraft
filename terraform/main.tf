@@ -39,7 +39,7 @@ resource "aws_instance" "minecraft" {
   key_name      = "lab6"
 
   # 보안 그룹 설정 변경
-  security_groups = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft.name] : [data.aws_security_group.existing.name]
+  security_groups = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft[0].name] : [data.aws_security_group.existing[0].name]
 
   tags = {
     Name = "MinecraftServer"
