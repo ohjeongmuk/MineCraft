@@ -29,3 +29,14 @@ resource "aws_security_group" "minecraft" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_instance" "minecraft" {
+  ami           = "ami-01cd4de4363ab6ee8"
+  instance_type = "t3.small"
+  key_name      = "lab6"
+  security_groups = [aws_security_group.minecraft.name]
+
+  tags = {
+    Name = "MinecraftServer"
+  }
+}
