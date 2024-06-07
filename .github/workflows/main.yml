@@ -40,8 +40,14 @@ jobs:
         INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
         echo "[minecraft_server]" > ansible/terraform-inventory
         echo "$INSTANCE_IP ansible_ssh_private_key_file=path_to_private_key ansible_user=ec2-user" >> ansible/terraform-inventory
+        ansible-playbook -i ansible/terraform-inventory ansible/playbook.yml -vvvv
       env:
         MINECRAFTSERVERURL: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar"
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+
+    - name: Check Minecraft server with nmap
+      run: |
+        INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
+        nmap -sV -Pn -p T:25565 $INSTANCE_IP
