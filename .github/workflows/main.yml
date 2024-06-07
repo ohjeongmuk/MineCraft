@@ -14,12 +14,10 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Initialize Terraform
-        run: terraform init -reconfigure -backend=false -plugin-dir="$HOME/.terraform.d/plugins" -upgrade
-
-    - name: Apply Terraform
       run: |
         cd terraform
-        terraform apply -auto-approve -var="key_name=lab6"
+        terraform init
+        terraform apply -auto-approve -var="key_name=lab6"  
 
     - name: Setup Ansible
       run: |
