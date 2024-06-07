@@ -30,7 +30,7 @@ jobs:
 
 
     - name: Run Ansible playbook
-      run: ansible-playbook -i terraform/terraform-inventory ansible/playbook.yml
+      run: ansible-playbook -i terraform/terraform-inventory ansible/playbook.yml -vvvv
       env:
         MINECRAFTSERVERURL: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar"
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
