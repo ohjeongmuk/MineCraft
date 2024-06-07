@@ -1,7 +1,6 @@
 ---
 - name: Install and configure Minecraft server
-  hosts: minecraft
-  become: yes
+
   tasks:
     - name: Install Java
       yum:
