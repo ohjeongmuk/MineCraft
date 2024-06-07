@@ -2,15 +2,30 @@ provider "aws" {
   region = "us-west-2"
 }
 
-# "<Provider>_<type>" "<name>" => 생성
-resource "aws_instance" "minecraft" {
-  ami           = "ami-01cd4de4363ab6ee8"  # 사용할 AMI ID로 변경
-  instance_type = "t3.small"               # 사용할 인스턴스 유형으로 변경
-  key_name      = "lab6"                    # 사용할 키 페어 이름으로 변경
+resource "aws_security_group" "minecraft" {
+  name        = "minecraft-security-group"
+  description = "Security group for Minecraft server"
 
-  security_groups = ["sg-03f416246cf746bf8"]
+  // SSH 및 Minecraft 포트에 대한 인바운드 규칙 추가
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-  tags = {
-    Name = "MinecraftServer"
+  ingress {
+    from_port   = 25565
+    to_port     = 25565
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  // 모든 트래픽에 대한 아웃바운드 규칙 추가
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
