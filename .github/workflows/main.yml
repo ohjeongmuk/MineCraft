@@ -14,14 +14,11 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Start EC2 Instance
-      run: |
-        aws ec2 start-instances --instance-ids i-0ba311bacff7784d4
+      run: aws ec2 start-instances --instance-ids i-0ba311bacff7784d4
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-
-
 
     - name: Get Instance Public IP
       id: public_ip
