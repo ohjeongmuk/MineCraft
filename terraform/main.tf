@@ -2,15 +2,14 @@ provider "aws" {
   region = "us-west-2"
 }
 
-resource "aws_instance" "minecraft_start" {
-  count         = 1
-  instance_id   = "i-0ba311bacff7784d4" // 시작할 인스턴스의 ID로 대체합니다.
-  
-  lifecycle {
-    create_before_destroy = true
-  }
+resource "aws_instance" "minecraft" {
+  ami           = "ami-01cd4de4363ab6ee8"  # 사용할 AMI ID로 변경
+  instance_type = "t3.small"               # 사용할 인스턴스 유형으로 변경
+  key_name      = "lab6"                    # 사용할 키 페어 이름으로 변경
 
-  provisioner "local-exec" {
-    command = "aws ec2 start-instances --instance-ids ${self.instance_id}"
+  security_groups = ["sg-03f416246cf746bf8"]  # 사용할 보안 그룹 ID로 변경
+
+  tags = {
+    Name = "MinecraftServer"
   }
 }
