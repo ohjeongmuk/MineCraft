@@ -1,5 +1,6 @@
 ---
 - name: Ensure Minecraft server is running
+  hosts: localhost
   tasks:
     - name: Check if Minecraft server is running
       shell: ps aux | grep -v grep | grep minecraft
