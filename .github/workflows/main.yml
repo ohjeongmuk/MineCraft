@@ -26,6 +26,10 @@ jobs:
           INSTANCE_ID=$(aws ec2 describe-instances --instance-ids i-0ba311bacff7784d4 --query 'Reservations[0].Instances[0].InstanceId' --output text)
           echo "::set-output name=instance_id::$INSTANCE_ID"
         fi
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
 
 
     - name: Get Instance Public IP
