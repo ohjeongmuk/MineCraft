@@ -37,7 +37,7 @@ resource "aws_instance" "minecraft" {
   ami           = "ami-01cd4de4363ab6ee8"
   instance_type = "t3.small"
   key_name      = "lab6"
-  security_groups = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft.name] : [data.aws_security_group.existing.name]
+  security_groups = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft[0].name] : [data.aws_security_group.existing[0].name]
 
   tags = {
     Name = "MinecraftServer"
