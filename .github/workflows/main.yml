@@ -17,6 +17,7 @@ jobs:
       run: |
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > lab6.pem
         chmod 400 lab6.pem
+        cat lab6.pem
 
     - name: Initialize Terraform
       run: |
