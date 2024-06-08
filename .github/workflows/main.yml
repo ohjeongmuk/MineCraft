@@ -50,7 +50,7 @@ jobs:
     - name: Install and configure Minecraft server
       run: |
         INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
-        cat $INSTANCE_IP
+        echo $INSTANCE_IP
         ssh -i lab6.pem ec2-user@$INSTANCE_IP "bash -s" < script/start_minecraft.sh
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
