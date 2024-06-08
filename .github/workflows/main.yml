@@ -59,15 +59,17 @@ jobs:
         # 퍼블릭 IP 추출
         INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
         echo "Instance IP: $INSTANCE_IP"
+        
+        # 잠시 기다립니다.
+        sleep 30
 
         # SSH 연결 시도
-        if nc -zv -w 5 $INSTANCE_IP 22; then
-          echo "SSH connection successful."
-          # SSH 연결이 성공하면 Minecraft 서버 시작 스크립트 실행
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "bash -s" < script/start_minecraft.sh
-        else
-          echo "Failed to establish SSH connection to $INSTANCE_IP"
-        fi
+        echo "Checking SSH connection..."
+        nc -zv -w 30 $INSTANCE_IP 22
+
+        # SSH 연결이 성공하면 Minecraft 서버 시작 스크립트 실행
+        echo "Attempting to SSH..."
+        ssh -vvv -o StrictHostKeyChecking=no -o ConnectTimeout=30 -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "bash -s" < script/start_minecraft.sh
 
     - name: Check Minecraft server with nmap
       run: |
