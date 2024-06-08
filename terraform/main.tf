@@ -39,7 +39,7 @@ resource "aws_instance" "minecraft" {
   key_name      = "lab6"
   # security_groups = [data.aws_security_group.existing.name]
   availability_zone = "us-west-2a"  # 원하는 가용 영역을 여기에 지정합니다.
-  subnet_id     = "subnet-1234567890abcdef0"  # 원하는 서브넷의 ID를 여기에 지정합니다.
+  subnet_id     = "subnet-0dc899575612c8714"  # 원하는 서브넷의 ID를 여기에 지정합니다.
 
   tags = {
     Name = "MinecraftServer"
