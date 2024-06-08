@@ -45,7 +45,7 @@ resource "aws_instance" "minecraft" {
   subnet_id     = "subnet-0dc899575612c8714"  # 원하는 서브넷의 ID를 여기에 지정합니다.
 
   # 보안 그룹을 인스턴스에 할당
-  vpc_security_group_ids = [aws_security_group.minecraft.id]
+  vpc_security_group_ids = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft[0].id] : [data.aws_security_group.existing.id]
 
   tags = {
     Name = "MinecraftServer"
