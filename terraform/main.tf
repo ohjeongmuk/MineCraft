@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-2"
+  region = "us-west-2a"
 }
 
 data "aws_security_group" "existing" {
