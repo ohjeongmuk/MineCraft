@@ -39,6 +39,7 @@ resource "aws_instance" "minecraft" {
   key_name      = "lab6"
   security_groups = [data.aws_security_group.existing.name]
   availability_zone = "us-west-2a"  # 여기서 원하는 AZ를 지정합니다.
+  vpc_id        = "vpc-03d794f6b57f97142"  # 원하는 VPC의 ID를 여기에 지정합니다.
 
   tags = {
     Name = "MinecraftServer"
