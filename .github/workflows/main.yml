@@ -61,7 +61,7 @@ jobs:
         INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
         echo "Instance IP: $INSTANCE_IP"
         
-
+        sleep 15
         # SSH 연결 시도
         echo "Checking SSH connection..."
         nc -zv -w 30 $INSTANCE_IP 22
