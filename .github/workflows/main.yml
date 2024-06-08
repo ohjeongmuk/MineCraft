@@ -31,18 +31,25 @@ jobs:
       run: |
         cat terraform/instance_public_ip.txt
 
-    - name: Run Ansible playbook
+    #- name: Run Ansible playbook
+    #  run: |
+    #    INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
+    #    echo "[minecraft_server]" > ansible/terraform-inventory
+    #    echo "$INSTANCE_IP ansible_ssh_private_key_file=lab6.pem ansible_user=ec2-user" >> ansible/terraform-inventory
+    #    cat ansible/terraform-inventory
+    #    ansible-playbook -i ansible/terraform-inventory ansible/playbook.yml --private-key lab6.pem -vvvv
+    #  env:
+    #    MINECRAFTSERVERURL: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar"
+    #    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #    AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+    #    SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Install and configure Minecraft server
       run: |
         INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
-        echo "[minecraft_server]" > ansible/terraform-inventory
-        echo "$INSTANCE_IP ansible_ssh_private_key_file=lab6.pem ansible_user=ec2-user" >> ansible/terraform-inventory
-        cat ansible/terraform-inventory
-        ansible-playbook -i ansible/terraform-inventory ansible/playbook.yml --private-key lab6.pem -vvvv
+        ssh -i lab6.pem ec2-user@$INSTANCE_IP "bash -s" < script/start_minecraft.sh
       env:
-        MINECRAFTSERVERURL: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar"
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Check Minecraft server with nmap
