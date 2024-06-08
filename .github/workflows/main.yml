@@ -16,7 +16,7 @@ jobs:
     - name: Setup SSH key
       run: |
         chmod 400 lab6.pem
-        cat lab6.pem
+        echo "$(<lab6.pem)"
 
     - name: Initialize Terraform
       run: |
