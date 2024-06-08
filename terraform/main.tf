@@ -2,12 +2,7 @@ provider "aws" {
   region = "us-west-2"
 }
 
-data "aws_security_group" "existing" {
-  name = "MineCraft"
-}
-
 resource "aws_security_group" "minecraft" {
-  count = length(data.aws_security_group.existing) == 0 ? 1 : 0
   name = "MineCraft"
   description = "Security group for Minecraft server"
 
