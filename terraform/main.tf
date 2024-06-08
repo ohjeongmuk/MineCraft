@@ -1,3 +1,8 @@
+provider "registry.terraform.io/hashicorp/aws" {
+  region = "us-west-2" # 사용하려는 AWS 리전
+}
+
+
 # VPC 설정
 resource "aws_vpc" "minecraft_vpc" {
   cidr_block = "10.0.0.0/16" # 사용 가능한 CIDR 블록 선택
