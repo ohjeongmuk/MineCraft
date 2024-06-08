@@ -37,7 +37,6 @@ resource "aws_instance" "minecraft" {
   ami           = "ami-01cd4de4363ab6ee8"
   instance_type = "t3.small"
   key_name      = "lab6"
-  security_groups = [data.aws_security_group.existing.name]
   availability_zone = "us-west-2a"  # 여기서 원하는 AZ를 지정합니다.
   subnet_id = "subnet-0dc899575612c8714"
 
