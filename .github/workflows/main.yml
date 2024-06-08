@@ -67,7 +67,7 @@ jobs:
         nc -zv -w 30 $INSTANCE_IP 22
 
         # SSH 연결이 성공하면 Minecraft 서버 시작 스크립트 실행
-        ssh -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "bash -s" < script/start_minecraft.sh
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "bash -s" < script/start_minecraft.sh
 
     - name: Check Minecraft server with nmap
       run: |
