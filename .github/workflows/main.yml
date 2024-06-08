@@ -14,7 +14,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Setup SSH key
-      run: cat lab6.pem
+      run: |
+        chmod 400 lab6.pem
+        cat lab6.pem
 
     - name: Initialize Terraform
       run: |
