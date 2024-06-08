@@ -52,8 +52,8 @@ jobs:
         sleep 5
         INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
         echo $INSTANCE_IP
-#        telnet $INSTANCE_IP 22
         ssh -i lab6.pem ec2-user@$INSTANCE_IP "bash -s" < script/start_minecraft.sh
+#        telnet $INSTANCE_IP 22
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
