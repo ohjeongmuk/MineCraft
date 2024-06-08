@@ -1,51 +1,70 @@
-provider "aws" {
-  region = "us-west-2"
-}
+name: Provision and Configure Minecraft Server
 
-data "aws_security_group" "existing" {
-  name = "MineCraft"
-}
+on:
+  push:
+    branches:
+      - main
 
-resource "aws_security_group" "minecraft" {
-  count       = length(data.aws_security_group.existing) == 0 ? 1 : 0
-  name        = "MineCraft"
-  description = "Security group for Minecraft server"
+jobs:
+  setup:
+    runs-on: ubuntu-latest
 
-  ingress {
-    from_port   = 25565
-    to_port     = 25565
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+    - name: Setup SSH key
+      run: |
+        chmod 400 lab6.pem
+        echo "$(<lab6.pem)"
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
+    - name: Initialize Terraform
+      run: |
+        cd terraform
+        terraform init
+        terraform apply -auto-approve -var="key_name=lab6"  
+        terraform output -json | jq -r '.instance_ip.value' > ../terraform/instance_public_ip.txt
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
 
-resource "aws_instance" "minecraft" {
-  ami           = "ami-01cd4de4363ab6ee8"
-  instance_type = "t3.small"
-  key_name      = "lab6"
-  security_groups = [data.aws_security_group.existing.name]
-  availability_zone = "us-west-2a"  # 원하는 가용 영역을 여기에 지정합니다.
-  subnet_id     = "subnet-1234567890abcdef0"  # 원하는 서브넷의 ID를 여기에 지정합니다.
+    - name: Print instance public IP
+      run: |
+        cat terraform/instance_public_ip.txt
 
-  tags = {
-    Name = "MinecraftServer"
-  }
+    #- name: Run Ansible playbook
+    #  run: |
+    #    INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
+    #    echo "[minecraft_server]" > ansible/terraform-inventory
+    #    echo "$INSTANCE_IP ansible_ssh_private_key_file=lab6.pem ansible_user=ec2-user" >> ansible/terraform-inventory
+    #    cat ansible/terraform-inventory
+    #    ansible-playbook -i ansible/terraform-inventory ansible/playbook.yml --private-key lab6.pem -vvvv
+    #  env:
+    #    MINECRAFTSERVERURL: "https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar"
+    #    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #    AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+    #    SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-  lifecycle {
-    prevent_destroy = true  # 인스턴스를 삭제하지 않도록 설정
-  }
-}
+    - name: Setup SSH and start Minecraft server
+      run: |
+        # 퍼블릭 IP 추출
+        INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
+    
+        # SSH 연결 시도
+        if nc -zv -w 5 $INSTANCE_IP 22; then
+          echo "SSH connection successful."
+          # SSH 연결이 성공하면 Minecraft 서버 시작 스크립트 실행
+          ssh -i lab6.pem ec2-user@$INSTANCE_IP "bash -s" < script/start_minecraft.sh
+        else
+          echo "Failed to establish SSH connection to $INSTANCE_IP"
+        fi
+      env:
+        INSTANCE_IP: ${{ steps.extract_ip.outputs.instance_ip }}
+
+    - name: Check Minecraft server with nmap
+      run: |
+        sudo apt update && sudo apt install -y nmap
+        INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
+        nmap -sV -Pn -p T:25565 $INSTANCE_IP
