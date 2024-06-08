@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # *** INSERT SERVER DOWNLOAD URL BELOW ***
-# Do not add any spaces between your link and the "=", otherwise it won't work.>
+# Do not add any spaces between your link and the "=", otherwise it won't work. EG: MINECRAFTSERVERURL=https://urlexample
 
 
-MINECRAFTSERVERURL=https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14e>
+MINECRAFTSERVERURL=https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar
 
 
 # Download Java
@@ -35,7 +35,7 @@ sleep 1
 # Create SystemD Script to run Minecraft server jar on reboot
 cd /etc/systemd/system/
 touch minecraft.service
-printf '[Unit]\nDescription=Minecraft Server on start up\nWants=network-online.>
+printf '[Unit]\nDescription=Minecraft Server on start up\nWants=network-online.target\n[Service]\nUser=minecraft\nWorkingDirectory=/opt/minecraft/server\nExecStart=/opt/minecraft/server/start\nStandardInput=null\n[Install]\nWantedBy=multi-user.target' >> minecraft.service
 sudo systemctl daemon-reload
 sudo systemctl enable minecraft.service
 sudo systemctl start minecraft.service
