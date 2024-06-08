@@ -3,12 +3,12 @@ provider "aws" {
 }
 
 data "aws_security_group" "existing" {
-  name = "minecraft-security-group"
+  name = "MineCraft"
 }
 
 resource "aws_security_group" "minecraft" {
   count       = length(data.aws_security_group.existing) == 0 ? 1 : 0
-  name        = "minecraft-security-group"
+  name        = "MineCraft"
   description = "Security group for Minecraft server"
 
   ingress {
