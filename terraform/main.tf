@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-2a"
+  region = "us-west-2"
 }
 
 data "aws_security_group" "existing" {
@@ -38,6 +38,7 @@ resource "aws_instance" "minecraft" {
   instance_type = "t3.small"
   key_name      = "lab6"
   security_groups = [data.aws_security_group.existing.name]
+  availability_zone = "us-west-2a"  # 여기서 원하는 AZ를 지정합니다.
 
   tags = {
     Name = "MinecraftServer"
