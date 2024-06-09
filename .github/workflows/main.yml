@@ -55,7 +55,7 @@ jobs:
       run: cat ansible_hosts
 
     - name: Run Ansible playbook
-      run: ansible-playbook -i terraform/instance_public_ip.txt ansible/playbook.yml
+      run: ansible-playbook -i ansible_hosts ansible/playbook.yml
 
     #- name: Setup SSH and start Minecraft server
     #  run: |
