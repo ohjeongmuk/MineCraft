@@ -1,12 +1,16 @@
 #!/bin/bash
 
-# Install cronie if not already installed
+# 크론 서비스 설치
 sudo yum install -y cronie
 
-# Create and edit the startup.sh script
-echo '#!/bin/bash' > startup.sh
-echo 'sudo ./start' >> startup.sh
+# 크론 스크립트 작성
+cat <<EOF > startup.sh
+#!/bin/bash
+sudo ./start
+EOF
+
+# 크론 스크립트에 실행 권한 부여
 chmod +x startup.sh
 
-# Add a cron job to run startup.sh at reboot
-(crontab -l ; echo "@reboot ~/startup.sh") | crontab -
+# 크론 작업 등록
+(crontab -l 2>/dev/null; echo "@reboot /path/to/startup.sh") | crontab -
