@@ -46,38 +46,6 @@ resource "aws_instance" "minecraft" {
 
   # 보안 그룹을 인스턴스에 할당
   vpc_security_group_ids = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft[0].id] : [data.aws_security_group.existing.id]
- 
-  #provisioner "file" {
-  #  source      = "../script/start_minecraft.sh"
-  #  destination = "/home/ec2-user/start_minecraft.sh"
-  #  connection {
-  #    type        = "ssh"
-  #    user        = "ec2-user"
-  #    private_key = var.ssh_private_key  # 액션에서 전달된 SSH 개인 키 변수 사용
-  #    host        = self.public_ip
-  #  }
-  #}
-
-  # 파일 실행
-  #provisioner "remote-exec" {
-  #  inline = [
-  #    "chmod +x /home/ec2-user/start_minecraft.sh",
-  #    "sudo /home/ec2-user/start_minecraft.sh"
-  #  ]
-  #  connection {
-  #    type        = "ssh"
-  #    user        = "ec2-user"
-  #    private_key = var.ssh_private_key  # 액션에서 전달된 SSH 개인 키 변수 사용
-  #    host        = self.public_ip
-  #  }
-  #}
-
-  #connection {
-  #  type        = "ssh"
-  #  user        = "ec2-user"
-  #  private_key = var.ssh_private_key  # 액션에서 전달된 SSH 개인 키 변수 사용
-  #  host        = self.public_ip
-  #}
 
   lifecycle {
     prevent_destroy = true  # 인스턴스를 삭제하지 않도록 설정
