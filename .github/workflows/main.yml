@@ -22,13 +22,14 @@ jobs:
       run: |
         cd terraform
         terraform init
-        terraform apply -auto-approve -var="key_name=lab6"  
+        terraform apply -auto-approve -var="key_name=lab6" -var="ssh_private_key_path=~/Desktop/mykeyfile/lab6.pem"   
         terraform output -json | jq -r '.instance_ip.value' > ../terraform/instance_public_ip.txt
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
         AWS_REGION: us-west-2  # 원하는 리전을 여기에 명시합니다.
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Print instance public IP
       run: |
