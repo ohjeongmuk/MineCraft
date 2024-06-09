@@ -56,7 +56,7 @@ resource "aws_instance" "minecraft" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(var.ssh_private_key_path)  # 액션에서 전달된 SSH 개인 키 파일 경로 사용
+    private_key = var.ssh_private_key  # 액션에서 전달된 SSH 개인 키 변수 사용
     host        = self.public_ip
   }
 
