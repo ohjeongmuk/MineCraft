@@ -31,9 +31,13 @@ jobs:
         AWS_REGION: us-west-2  # 원하는 리전을 여기에 명시합니다.
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Print instance public IP
-      run: |
-        cat terraform/instance_public_ip.txt
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install Ansible
+      run: pip install ansible
 
     - name: Setup SSH key
       run: |
@@ -41,21 +45,24 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
-    - name: Setup SSH and start Minecraft server
-      run: |
+    - name: Run Ansible playbook
+      run: ansible-playbook -i terraform/instance_public_ip.txt ansible/playbook.yml
+
+    #- name: Setup SSH and start Minecraft server
+    #  run: |
         # 퍼블릭 IP 추출
-        INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
-        echo "Instance IP: $INSTANCE_IP"
+    #    INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
+    #    echo "Instance IP: $INSTANCE_IP"
         
-        sleep 15
+   #     sleep 15
         # SSH 연결 시도
-        echo "Checking SSH connection..."
-        nc -zv -w 30 $INSTANCE_IP 22
+   #     echo "Checking SSH connection..."
+   #     nc -zv -w 30 $INSTANCE_IP 22
 
         # SSH 연결이 성공하면 Minecraft 서버 시작 스크립트 실행
         
         # ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "sudo bash -s" < script/start_minecraft.sh &&
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "sudo bash -s" < script/reboot.sh
+   #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "sudo bash -s" < script/reboot.sh
 
     - name: Check Minecraft server with nmap
       run: |
