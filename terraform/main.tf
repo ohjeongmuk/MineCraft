@@ -47,6 +47,12 @@ resource "aws_instance" "minecraft" {
   # 보안 그룹을 인스턴스에 할당
   vpc_security_group_ids = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft[0].id] : [data.aws_security_group.existing.id]
 
+  provisioner "remote-exec" {
+    inline = [
+      "sudo /home/ec2-user/script/start_minecraft.sh"
+    ]
+  }
+
   tags = {
     Name = "MinecraftServer"
   }
