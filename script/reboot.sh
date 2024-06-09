@@ -1,14 +1,12 @@
 #!/bin/bash
 
-# Install cronie package
+# Install cronie if not already installed
 sudo yum install -y cronie
 
-# Create and edit startup.sh script
-cat << EOF > startup.sh
-#!/bin/bash
-sudo ./start
-EOF
+# Create and edit the startup.sh script
+echo '#!/bin/bash' > startup.sh
+echo 'sudo ./start' >> startup.sh
 chmod +x startup.sh
 
-# Set up cron job to run startup.sh at reboot
-(crontab -l ; echo "@reboot $PWD/startup.sh") | crontab -
+# Add a cron job to run startup.sh at reboot
+(crontab -l ; echo "@reboot ~/startup.sh") | crontab -
