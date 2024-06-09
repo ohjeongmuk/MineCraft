@@ -53,7 +53,7 @@ jobs:
 
         # SSH 연결이 성공하면 Minecraft 서버 시작 스크립트 실행
         
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "sudo bash -s" < script/start_minecraft.sh &&
+        # ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "sudo bash -s" < script/start_minecraft.sh &&
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "sudo bash -s" < script/reboot.sh
 
     - name: Check Minecraft server with nmap
