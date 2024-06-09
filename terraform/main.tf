@@ -48,7 +48,7 @@ resource "aws_instance" "minecraft" {
   vpc_security_group_ids = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft[0].id] : [data.aws_security_group.existing.id]
 
   provisioner "file" {
-    source      = "../scripts/start_minecraft.sh"
+    source      = "../script/start_minecraft.sh"
     destination = "/home/ec2-user/start_minecraft.sh"
     connection {
       type        = "ssh"
