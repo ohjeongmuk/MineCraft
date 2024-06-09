@@ -57,22 +57,6 @@ jobs:
     - name: Run Ansible playbook
       run: ansible-playbook -i ansible_hosts ansible/playbook.yml
 
-    #- name: Setup SSH and start Minecraft server
-    #  run: |
-        # 퍼블릭 IP 추출
-    #    INSTANCE_IP=$(cat terraform/instance_public_ip.txt)
-    #    echo "Instance IP: $INSTANCE_IP"
-        
-   #     sleep 15
-        # SSH 연결 시도
-   #     echo "Checking SSH connection..."
-   #     nc -zv -w 30 $INSTANCE_IP 22
-
-        # SSH 연결이 성공하면 Minecraft 서버 시작 스크립트 실행
-        
-        # ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "sudo bash -s" < script/start_minecraft.sh &&
-   #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$INSTANCE_IP "sudo bash -s" < script/reboot.sh
-
     - name: Check Minecraft server with nmap
       run: |
         sudo apt update && sudo apt install -y nmap
