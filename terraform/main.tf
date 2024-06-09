@@ -61,8 +61,9 @@ resource "aws_instance" "minecraft" {
   # 파일 실행
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/ec2-user/start_minecraft.sh",  # 스크립트를 실행 가능하도록 권한 변경
-      "sudo /home/ec2-user/start_minecraft.sh"      # 스크립트 실행
+      "cd /home/ec2-user"
+      "chmod +x start_minecraft.sh",  # 스크립트를 실행 가능하도록 권한 변환
+      "bash start_minecraft.sh"      # 스크립트 실행
     ]
     connection {
       type        = "ssh"
