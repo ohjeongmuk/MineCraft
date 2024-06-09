@@ -5,7 +5,7 @@ variable "key_name" {
 
 # variables.tf
 
-variable "ssh_private_key_path" {
+variable "ssh_private_key" {
   description = "Path to the SSH private key"
   type        = string
 }
