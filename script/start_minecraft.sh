@@ -1,10 +1,4 @@
-#!/bin/bash
-
-# Create script.bash
-touch script.bash
-
-# Add content to script.bash
-echo '#!/bin/bash' > script.bash
+echo '#!/bin/bash' >> script.bash
 echo '' >> script.bash
 echo '# *** INSERT SERVER DOWNLOAD URL BELOW ***' >> script.bash
 echo '# Do not add any spaces between your link and the "=", otherwise it won't work. EG: MINECRAFTSERVERURL=https://urlexample' >> script.bash
@@ -30,9 +24,11 @@ echo 'sed -i "s/false/true/p" eula.txt' >> script.bash
 echo 'touch start' >> script.bash
 echo 'printf "#!/bin/bash\njava -Xmx1300M -Xms1300M -jar server.jar nogui\n" >> start' >> script.bash
 echo 'chmod +x start' >> script.bash
+echo 'sleep 1' >> script.bash
 echo 'touch stop' >> script.bash
 echo 'printf "#!/bin/bash\nkill -9 \$(ps -ef | pgrep -f 'java')\n" >> stop' >> script.bash
 echo 'chmod +x stop' >> script.bash
+echo 'sleep 1' >> script.bash
 echo '' >> script.bash
 echo '# Create SystemD Script to run Minecraft server jar on reboot' >> script.bash
 echo 'cd /etc/systemd/system/' >> script.bash
@@ -41,11 +37,3 @@ echo 'printf "[Unit]\nDescription=Minecraft Server on start up\nWants=network-on
 echo 'sudo systemctl daemon-reload' >> script.bash
 echo 'sudo systemctl enable minecraft.service' >> script.bash
 echo 'sudo systemctl start minecraft.service' >> script.bash
-echo '' >> script.bash
-echo '# End script' >> script.bash
-
-# Make script.bash executable
-chmod +x script.bash
-
-# Run script.bash
-./script.bash
