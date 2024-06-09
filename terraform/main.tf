@@ -47,17 +47,35 @@ resource "aws_instance" "minecraft" {
   # 보안 그룹을 인스턴스에 할당
   vpc_security_group_ids = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft[0].id] : [data.aws_security_group.existing.id]
 
+  provisioner "file" {
+    source      = "../scripts/setup-minecraft.sh"
+    destination = "/home/ec2-user/setup-minecraft.sh"
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file(var.private_key_path)
+      host        = self.public_ip
+    }
+  }
   provisioner "remote-exec" {
     inline = [
-      "sudo /home/ec2-user/script/start_minecraft.sh"
+      "chmod +x /home/ec2-user/setup-minecraft.sh",
+      "sudo /home/ec2-user/setup-minecraft.sh"
     ]
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = var.ssh_private_key  # 액션에서 전달된 SSH 개인 키 변수 사용
+      host        = self.public_ip
+    }
   }
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = var.ssh_private_key  # 액션에서 전달된 SSH 개인 키 변수 사용
-    host        = self.public_ip
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = var.ssh_private_key  # 액션에서 전달된 SSH 개인 키 변수 사용
+      host        = self.public_ip
+    }
   }
 
   tags = {
