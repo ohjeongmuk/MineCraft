@@ -57,10 +57,12 @@ resource "aws_instance" "minecraft" {
       host        = self.public_ip
     }
   }
+
+  # 파일 실행
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/ec2-user/start-minecraft.sh",
-      "sudo /home/ec2-user/start-minecraft.sh"
+      "chmod +x /home/ec2-user/start_minecraft.sh",  # 스크립트를 실행 가능하도록 권한 변경
+      "sudo /home/ec2-user/start_minecraft.sh"      # 스크립트 실행
     ]
     connection {
       type        = "ssh"
@@ -70,11 +72,8 @@ resource "aws_instance" "minecraft" {
     }
   }
 
-  connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = var.ssh_private_key  # 액션에서 전달된 SSH 개인 키 변수 사용
-      host        = self.public_ip
+  lifecycle {
+    prevent_destroy = true  # 인스턴스를 삭제하지 않도록 설정
   }
 }
 
