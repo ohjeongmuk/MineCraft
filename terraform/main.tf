@@ -2,10 +2,6 @@ provider "aws" {
   region = "us-west-2"
 }
 
-# 기존 보안 그룹을 데이터 소스로 가져옴
-data "aws_security_group" "existing" {
-  name = "MineCraft"
-}
 
 # TLS 키 페어 생성
 resource "tls_private_key" "minecraft" {
@@ -21,7 +17,6 @@ resource "aws_key_pair" "minecraft" {
 
 # 새로운 보안 그룹 생성
 resource "aws_security_group" "minecraft" {
-  count       = length(data.aws_security_group.existing) == 0 ? 1 : 0
   name        = "MineCraft"
   description = "Security group for Minecraft server"
   vpc_id      = "vpc-03d794f6b57f97142"  # 원하는 VPC의 ID를 여기에 지정합니다.
@@ -57,7 +52,7 @@ resource "aws_instance" "minecraft" {
   subnet_id     = "subnet-0dc899575612c8714"  # 원하는 서브넷의 ID를 여기에 지정합니다.
 
   # 보안 그룹을 인스턴스에 할당
-  vpc_security_group_ids = length(data.aws_security_group.existing) == 0 ? [aws_security_group.minecraft[0].id] : [data.aws_security_group.existing.id]
+  vpc_security_group_ids = [aws_security_group.minecraft.id]
 
   lifecycle {
     prevent_destroy = true  # 인스턴스를 삭제하지 않도록 설정
