@@ -19,7 +19,7 @@ resource "aws_key_pair" "minecraft" {
 resource "aws_security_group" "minecraft" {
   name        = "MineCraft"
   description = "Security group for Minecraft server"
-  vpc_id      = "vpc-03d794f6b57f97142"  # 원하는 VPC의 ID를 여기에 지정합니다.
+  vpc_id      = "vpc-04000ec46e8d965c0"  # 원하는 VPC의 ID를 여기에 지정합니다.
 
   ingress {
     from_port   = 25565
@@ -49,7 +49,7 @@ resource "aws_instance" "minecraft" {
   instance_type = "t3.small"
   key_name      = aws_key_pair.minecraft.key_name  # 새로 생성된 키 페어 사용
   availability_zone = "us-west-2a"  # 원하는 가용 영역을 여기에 지정합니다.
-  subnet_id     = "subnet-0dc899575612c8714"  # 원하는 서브넷의 ID를 여기에 지정합니다.
+  subnet_id     = "subnet-0014adfa681df4606"  # 원하는 서브넷의 ID를 여기에 지정합니다.
 
   # 보안 그룹을 인스턴스에 할당
   vpc_security_group_ids = [aws_security_group.minecraft.id]
