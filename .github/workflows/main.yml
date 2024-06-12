@@ -21,6 +21,10 @@ jobs:
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: us-west-2
 
+    - name: Delete Existing Security Group
+      run: |
+        aws ec2 delete-security-group --group-name MineCraft --vpc-id vpc-04000ec46e8d965c0
+
     - name: Check and delete existing key pair
       run: |
         KEY_NAME="minecraft-key"
