@@ -60,6 +60,10 @@ resource "aws_instance" "minecraft" {
   # 보안 그룹을 인스턴스에 할당
   vpc_security_group_ids = [aws_security_group.minecraft.id]
 
+  tags = {
+    Name = "MineCraft-Server"
+  }
+
   lifecycle {
     prevent_destroy = true  # 인스턴스를 삭제하지 않도록 설정
   }
