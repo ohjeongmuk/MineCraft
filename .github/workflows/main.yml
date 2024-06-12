@@ -21,6 +21,17 @@ jobs:
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: us-west-2
 
+    - name: Detach Security Group from Instances
+      run: |
+        SECURITY_GROUP_ID=$(aws ec2 describe-security-groups --group-names MineCraft --query 'SecurityGroups[0].GroupId' --output text)
+        INSTANCE_IDS=$(aws ec2 describe-instances --filters "Name=instance.group-id,Values=$SECURITY_GROUP_ID" --query 'Reservations[*].Instances[*].InstanceId' --output text)
+        
+        if [ -n "$INSTANCE_IDS" ]; then
+          for INSTANCE_ID in $INSTANCE_IDS; do
+            aws ec2 modify-instance-attribute --instance-id $INSTANCE_ID --groups $(aws ec2 describe-instances --instance-id $INSTANCE_ID --query 'Reservations[*].Instances[*].SecurityGroups[?GroupId!=`'$SECURITY_GROUP_ID'`].GroupId' --output text)
+          done
+        fi
+
     - name: Delete Existing Security Group
       run: |
         aws ec2 delete-security-group --group-name MineCraft
