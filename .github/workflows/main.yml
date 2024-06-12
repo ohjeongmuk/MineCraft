@@ -20,8 +20,16 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
 
-    - name: Delete existing key pair if exists
-      run: ./delete_key_pair.sh
+    - name: Check and delete existing key pair
+      run: |
+        KEY_NAME="minecraft-key"
+        if aws ec2 describe-key-pairs --key-name $KEY_NAME > /dev/null 2>&1; then
+          echo "Key pair $KEY_NAME exists. Deleting..."
+          aws ec2 delete-key-pair --key-name $KEY_NAME
+        else
+          echo "Key pair $KEY_NAME does not exist. Proceeding..."
+        fi
+
         
     - name: Initialize Terraform
       run: |
