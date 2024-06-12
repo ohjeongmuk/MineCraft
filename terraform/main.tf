@@ -40,7 +40,14 @@ resource "aws_security_group" "minecraft" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
 }
+
+
 
 # EC2 인스턴스 생성
 resource "aws_instance" "minecraft" {
