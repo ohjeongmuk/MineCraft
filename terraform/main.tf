@@ -7,6 +7,11 @@ data "aws_security_group" "existing" {
   name = "MineCraft"
 }
 
+resource "aws_key_pair" "minecraft" {
+  key_name   = "minecraft-key"
+  public_key = file("${path.module}/minecraft-key.pub")  # 미리 생성된 공개 키 파일을 사용
+}
+
 # 새로운 보안 그룹 생성
 resource "aws_security_group" "minecraft" {
   count       = length(data.aws_security_group.existing) == 0 ? 1 : 0
@@ -40,7 +45,7 @@ resource "aws_security_group" "minecraft" {
 resource "aws_instance" "minecraft" {
   ami           = "ami-01cd4de4363ab6ee8"
   instance_type = "t3.small"
-  key_name      = "lab6"
+  key_name      = aws_key_pair.minecraft.key_name  # 새로 생성된 키 페어 사용
   availability_zone = "us-west-2a"  # 원하는 가용 영역을 여기에 지정합니다.
   subnet_id     = "subnet-0dc899575612c8714"  # 원하는 서브넷의 ID를 여기에 지정합니다.
 
