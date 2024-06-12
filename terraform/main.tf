@@ -7,9 +7,16 @@ data "aws_security_group" "existing" {
   name = "MineCraft"
 }
 
+# TLS 키 페어 생성
+resource "tls_private_key" "minecraft" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+# AWS 키 페어 생성
 resource "aws_key_pair" "minecraft" {
   key_name   = "minecraft-key"
-  public_key = file("${path.module}/minecraft-key.pub")  # 미리 생성된 공개 키 파일을 사용
+  public_key = tls_private_key.minecraft.public_key_openssh
 }
 
 # 새로운 보안 그룹 생성
