@@ -8,7 +8,7 @@ This repository contains scripts and configurations for provisioning a MineCraft
 - Ansible was used to move the script file from the GitHub repository to EC2.
 - The same script for installing the Minecraft server in Project 1 was used in Project 2.
 - GitHub actions were linked for CI/CD automation.
-- A GitHub secret was used to use Credential. aws_access_key_id, aws_secret_access_key, aws_session_token, ssh_private_key are saved
+- A GitHub secret was used to use Credential. aws_access_key_id, aws_secret_access_key, aws_session_token are saved
 
 ## Contents
 
@@ -19,13 +19,37 @@ This repository contains scripts and configurations for provisioning a MineCraft
 - `.github/workflows`: CI/CD Automation GitHub Actions
 
 ## Github Action Setup
+0. SetUP Security Group and New Key Pair
+
+- Delete Old Security Group
+```
+    - name: Delete Existing Security Group
+      run: |
+        aws ec2 delete-security-group --group-name MineCraft
+```
+- Delete Old Key Pair
+```
+    - name: Check and delete existing key pair
+      run: |
+        KEY_NAME="minecraft-key"
+        if aws ec2 describe-key-pairs --key-name $KEY_NAME > /dev/null 2>&1; then
+          echo "Key pair $KEY_NAME exists. Deleting..."
+          aws ec2 delete-key-pair --key-name $KEY_NAME
+        else
+          echo "Key pair $KEY_NAME does not exist. Proceeding..."
+        fi
+
+```
+
+
 1. Intitialize Terraform and use lab6 public_key in AWS to create new instance. Save instance public IP address into instance_public_ip.txt on ../terraform/
 ```
     - name: Initialize Terraform
       run: |
         cd terraform
         terraform init
-        terraform apply -auto-approve -var="key_name=lab6"  
+        terraform apply -auto-approve
+        terraform output -raw private_key > ../terraform/minecraft_key.pem
         terraform output -json | jq -r '.instance_ip.value' > ../terraform/instance_public_ip.txt
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -92,7 +116,7 @@ This repository contains scripts and configurations for provisioning a MineCraft
 
 ## Contributing
 
-Contributions are welcome! If you have any suggestions, improvements, or bug fixes, feel free to open an issue or create a pull request.
+Contributions are welcome! If you have any suggestions, improvements, or bug fixes, feel free to open an issue or create a pull request. Thie project will be updated with Dockerfile in the future.
 
 ## License
 
